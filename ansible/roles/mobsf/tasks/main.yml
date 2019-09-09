@@ -1,0 +1,92 @@
+---
+
+- name: "Clone MobSF"
+  git:
+    repo: https://github.com/MobSF/Mobile-Security-Framework-MobSF.git
+    dest: "$HOME/Mobile-Security-Framework-MobSF"
+  tags:
+    - mobsf
+    - source
+
+- name: Initialize MobSF
+  command: ./setup.sh
+  args:
+    chdir: "$HOME/Mobile-Security-Framework-MobSF"
+  tags:
+   - mobsf
+   - init
+
+- name: "Create log directory"
+  command: mkdir -p $HOME/Library/Logs/mobsf
+  become: false
+  tags:
+   - mobsf
+   - log
+
+- name: Copy the plist
+  command: mkdir -p "$HOME/Library/LaunchAgents/"
+  become: false
+  tags:
+    - mobsf
+    - plist
+
+- name: Copy the plist
+  copy:
+    src: ./roles/mobsf/files/com.mobsf.plist
+    dest: $HOME/Library/LaunchAgents/com.mobsf.plist
+  become: false
+  tags:
+    - mobsf
+    - plist
+
+- command: sed -i -e 's/USER/'$USER'/g' com.mobsf.plist
+  args:
+    chdir: $HOME/Library/LaunchAgents
+  tags:
+    - mobsf
+    - plist
+
+- command: rm com.mobsf.plist-e
+  args:
+    chdir: $HOME/Library/LaunchAgents
+  tags:
+    - mobsf
+    - plist
+
+- name: "Create script directory"
+  command: mkdir -p $HOME/Scripts
+  become: false
+  tags:
+   - mobsf
+   - log
+
+- name: "Copy launch MobSF script"
+  copy:
+    src: "{{ role_path }}/files/mobsf.sh"
+    dest: "~/Scripts/mobsf.sh"
+  become: false
+  tags:
+    - mobsf
+
+- name: "Set rights for launching script"
+  command: chmod a+x "~/Scripts/mobsf.sh"
+  become: false
+  tags:
+    - mobsf
+
+- name: Load the MobSF plist
+  command: launchctl load -w $HOME/Library/LaunchAgents/com.mobsf.plist
+  become: false
+  tags:
+    - mobsf
+    - plist
+
+- name: Start the MobSF plist
+  command: launchctl start $HOME/Library/LaunchAgents/com.mobsf.plist
+  become: false
+  ignore_errors: yes
+  register: start_cmd
+  failed_when: start_cmd.rc < 0 or start_cmd.rc > 3
+  tags:
+    - mobsf
+    - plist

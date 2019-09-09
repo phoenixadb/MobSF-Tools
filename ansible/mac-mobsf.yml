@@ -1,0 +1,11 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars_files:
+    - config.yml
+
+  roles:
+     - mobsf
