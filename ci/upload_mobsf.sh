@@ -1,7 +1,7 @@
 #!/bin/bash
 # Download file
 # upload_mobsf.sh mobsf_url mobsf_token mobile_app_full_path delete_after_analysis
-# ex: upload_mobsf.sh 'http://faas-mac-1.dt.620nm.net:8000' '7374e14eb76d40672961d93ed3769a2e71b6f852f8d6f483159bce6c9f83f6e7' ./myapp.apk true './'
+# ex: upload_mobsf.sh 'http://mobsf.com:8000' '7374e14eb76d40672961d93ed3769a2e71b6f852f8d6f483159bce6c9f83f6e7' ./myapp.apk true './'
 
 # MobSF Root URL
 MOBSF_ROOT_URL="$1"
